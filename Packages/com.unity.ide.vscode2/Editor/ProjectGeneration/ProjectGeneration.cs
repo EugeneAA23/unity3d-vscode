@@ -92,6 +92,12 @@ namespace VSCodeEditor
     }
 }";
 
+        readonly List<string> MoveProjectsToAssets = new List<string> {
+            "Assembly-CSharp.csproj",
+            "Assembly-CSharp-Editor.csproj",
+            "Assembly-CSharp.Player.csproj",
+        };
+
         /// <summary>
         /// Map source extensions to ScriptingLanguages
         /// </summary>
@@ -173,7 +179,6 @@ namespace VSCodeEditor
         {
             Profiler.BeginSample("SolutionSynchronizerSync");
             SetupProjectSupportedExtensions();
-
             if (!HasFilesBeenModified(affectedFiles, reimportedFiles))
             {
                 Profiler.EndSample();
@@ -425,6 +430,7 @@ namespace VSCodeEditor
             List<ResponseFileData> responseFilesData)
         {
             SyncProjectFileIfNotChanged(ProjectFile(assembly), ProjectText(assembly, allAssetsProjectParts, responseFilesData));
+
         }
 
         void SyncProjectFileIfNotChanged(string path, string newContents)
@@ -432,9 +438,34 @@ namespace VSCodeEditor
             if (Path.GetExtension(path) == ".csproj")
             {
                 newContents = OnGeneratedCSProject(path, newContents);
+                MoveProjectFileToAssets(path);
             }
 
             SyncFileIfNotChanged(path, newContents);
+        }
+
+        void MoveProjectFileToAssets(string projectFilePath)
+        {
+            var path = Path.GetDirectoryName(projectFilePath);
+            var filename = Path.GetFileName(projectFilePath);
+
+            if (!MoveProjectsToAssets.Contains(filename))
+                return;
+
+            var csprojFilesDir = Path.Combine(path, "Assets", ".csprojfiles");
+            var newProjectPath = Path.Combine(csprojFilesDir, filename);
+
+            Directory.CreateDirectory(csprojFilesDir);
+            File.Copy(projectFilePath, newProjectPath);
+            FixPathInAseetsProjectFile(newProjectPath);
+        }
+
+        void FixPathInAseetsProjectFile(string projectFilePath)
+        {
+            string text = File.ReadAllText(projectFilePath);
+            text = text.Replace("Assets/", "../");
+            text = text.Replace("ProjectReference Include=\"", "ProjectReference Include=\"../../");
+            File.WriteAllText(projectFilePath, text);
         }
 
         void SyncSolutionFileIfNotChanged(string path, string newContents)

@@ -25,7 +25,7 @@ namespace VSCodeEditor
 
         static string DefaultApp => EditorPrefs.GetString("kScriptsDefaultApp");
 
-        static string DefaultArgument { get; } = "\"$(ProjectPath)\" -g \"$(File)\":$(Line):$(Column)";
+        static string DefaultArgument { get; } = "$(ProjectPath)/Assets -g $(File):$(Line)";
 
         string Arguments
         {
