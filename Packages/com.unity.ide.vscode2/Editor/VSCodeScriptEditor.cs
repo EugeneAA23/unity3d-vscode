@@ -186,6 +186,8 @@ namespace VSCodeEditor
                 column = 0;
 
             string arguments;
+            UnityEngine.Debug.Log(Arguments);
+            UnityEngine.Debug.Log(DefaultArgument);
             if (Arguments != DefaultArgument)
             {
                 arguments = m_ProjectGeneration.ProjectDirectory != path
@@ -194,7 +196,7 @@ namespace VSCodeEditor
             }
             else
             {
-                arguments = $@"""{m_ProjectGeneration.ProjectDirectory}""";
+                arguments = $@"""{m_ProjectGeneration.ProjectDirectory}/Assets""";
                 if (m_ProjectGeneration.ProjectDirectory != path && path.Length != 0)
                 {
                     arguments += $@" -g ""{path}"":{line}:{column}";
@@ -205,6 +207,8 @@ namespace VSCodeEditor
             {
                 return OpenOSX(arguments);
             }
+
+            UnityEngine.Debug.Log(arguments);
 
             var app = DefaultApp;
             var process = new Process
