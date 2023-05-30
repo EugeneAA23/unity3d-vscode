@@ -159,12 +159,15 @@ namespace VSCodeEditor
 
         public void SyncIfNeeded(string[] addedFiles, string[] deletedFiles, string[] movedFiles, string[] movedFromFiles, string[] importedFiles)
         {
+            UnityEngine.Debug.Log("Call SyncIfNeeded");
             (m_ProjectGeneration.AssemblyNameProvider as IPackageInfoCache)?.ResetPackageInfoCache();
-            m_ProjectGeneration.SyncIfNeeded(addedFiles.Union(deletedFiles).Union(movedFiles).Union(movedFromFiles).ToList(), importedFiles);
+            m_ProjectGeneration.Sync();
+            // m_ProjectGeneration.SyncIfNeeded(addedFiles.Union(deletedFiles).Union(movedFiles).Union(movedFromFiles).ToList(), importedFiles);
         }
 
         public void SyncAll()
         {
+            UnityEngine.Debug.Log("Call SyncAll");
             (m_ProjectGeneration.AssemblyNameProvider as IPackageInfoCache)?.ResetPackageInfoCache();
             AssetDatabase.Refresh();
             m_ProjectGeneration.Sync();

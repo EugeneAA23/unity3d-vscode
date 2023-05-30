@@ -456,14 +456,15 @@ namespace VSCodeEditor
             var newProjectPath = Path.Combine(csprojFilesDir, filename);
 
             Directory.CreateDirectory(csprojFilesDir);
-            File.Copy(projectFilePath, newProjectPath);
+            File.Copy(projectFilePath, newProjectPath, true);
             FixPathInAseetsProjectFile(newProjectPath);
         }
 
         void FixPathInAseetsProjectFile(string projectFilePath)
         {
             string text = File.ReadAllText(projectFilePath);
-            text = text.Replace("Assets/", "../");
+            text = text.Replace("Compile Include=\"Assets/", "Compile Include=\"../");
+            text = text.Replace("None Include=\"Assets/", "None Include=\"../");
             text = text.Replace("ProjectReference Include=\"", "ProjectReference Include=\"../../");
             File.WriteAllText(projectFilePath, text);
         }

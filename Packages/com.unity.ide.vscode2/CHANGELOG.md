@@ -4,6 +4,8 @@
 
 - The working directory has been changed to Assets
 - The .csproj files are now copied to Assets/.csprojfiles with path editing.
+- The method m_ProjectGeneration.SyncIfNeeded did not add new .cs files to .csproj.
+The call to this method has been replaced with m_ProjectGeneration.Sync
 
 
 ## [1.2.5] - 2022-02-07
